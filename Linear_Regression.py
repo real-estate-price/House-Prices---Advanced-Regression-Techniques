@@ -8,6 +8,7 @@ import csv
 def main():
     reader = csv.reader(open("test_and_train_one-hotencoding.csv", "r"), delimiter=",")
     A = list(reader)[1:]  # удаляем названия столбцов
+    A = [list(map(float, x)) for x in A]
     A = np.array(A)[:, 1:]  # удаляем столбец с id
     y = A[:, 0]  # вектор фактических цен
     A = A[:, 1:]  # матрица признаков
