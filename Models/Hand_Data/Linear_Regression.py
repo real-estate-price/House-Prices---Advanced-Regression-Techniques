@@ -1,19 +1,10 @@
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
-from sklearn.model_selection import train_test_split
 import numpy as np
-import pandas as pd
-import csv
+from Models.data_reader import make_data
 
 
 def main():
-    reader = csv.reader(open("test_and_train_one-hotencoding.csv", "r"), delimiter=",")
-    A = list(reader)[1:]  # удаляем названия столбцов
-    A = [list(map(float, x)) for x in A]
-    A = np.array(A)[:, 1:]  # удаляем столбец с id
-    y = A[:, 0]  # вектор фактических цен
-    A = A[:, 1:]  # матрица признаков
-    X_train, X_test, y_train, y_test = train_test_split(
-        A, y, random_state=0)  # делим выборку на train и test
+    X_train, X_test, y_train, y_test = make_data('new_data.csv')
 
     '''Обычная линейная регрессия(ошибка очень большая)'''
     mod = LinearRegression()
