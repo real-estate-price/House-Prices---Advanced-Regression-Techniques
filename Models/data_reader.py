@@ -15,8 +15,8 @@ def make_data(file_name):
     A = list(reader)[1:]  # удаляем названия столбцов
     A = [list(map(float, change(x))) for x in A]  # заменяем пустые элементы таблицы на 0 и приводим к float
     A = np.array(A)[:, 1:]  # удаляем столбец с id
-    y = A[:, 36]  # вектор фактических цен(находится в столбце 37)
-    A = np.hstack((A[:, :36], A[:, 37:]))  # матрица признаков
+    y = A[:, 0]  # вектор фактических цен(находится в столбце 37)
+    A = A[:, 1:]  # матрица признаков
     X_train, X_test, y_train, y_test = train_test_split(
         A, y, random_state=0)
     return X_train, X_test, y_train, y_test
