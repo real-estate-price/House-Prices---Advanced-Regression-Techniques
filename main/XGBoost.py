@@ -6,17 +6,25 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 from xgboost import XGBRegressor
-"""Здесь используется модель XGBRegressor. Предобработка данных: удалил 4 признака, где слишком много пропущенных
- данных(>80%), NaN заменятеся на наиболее частое значение в столбце, а категориальные значения обрабатываются 
- с помощью onehot.
-Ошибка: 14,1%
-Замечания: ручной подбор параметров модели ухудшает точность. Поэтому дэфолтные значения вроде как самые оптимальные
+from sklearn.model_selection import GridSearchCV
+"""Здесь используется модель XGBRegressor.
+
+Предобработка данных: удалил 4 признака, где слишком много пропущенных данных(>80%); удалил некоторые признаки, 
+ которые по анализу Борута считались неважными(брал чужой); NaN заменятеся на 
+ наиболее частое значение в столбце, а категориальные значения обрабатываются с помощью onehot.
+ 
+Ошибка: 12,7%
+
+Замечания: ручной подбор параметров модели ухудшает точность(даже с помощью 
+неручного(хотя перебирал только значения n_estimators)). Поэтому дэфолтные значения вроде как самые оптимальные
 """
 
 
 file = pd.read_csv('train (2).csv', index_col=0)
 y = file.SalePrice
-X = file.drop(['SalePrice', 'Alley', 'PoolQC', 'Fence', 'MiscFeature'], axis=1)
+X = file.drop(['SalePrice', 'Alley', 'PoolQC', 'Fence', 'MiscFeature', 'PoolArea',
+               'LowQualFinSF', 'MoSold', 'Condition2', 'LotConfig', 'YrSold', 'MiscVal',
+               'LotFrontage', 'SaleType', 'BsmtHalfBath', 'BsmtFinSF2', 'ExterCond', 'ScreenPorch'], axis=1)
 X_train, X_valid, y_train, y_valid = train_test_split(X, y,  train_size=0.8, test_size=0.2, random_state=0)
 
 """Выделяем категориальные и числовые данные"""
