@@ -35,19 +35,7 @@ num_cols = [cname for cname in X_train.columns if X_train[cname].dtype in ['int6
 
 
 for column in X_train.columns:
-                if column == 'PoolQC':
-                    X_train[column] = X_train[column].fillna('No Pool')
-                    X_test[column] = X_test[column].fillna('No Pool')
-                elif column == 'MiscFeature':
-                    X_train[column] = X_train[column].fillna('No Misc')
-                    X_test[column] = X_test[column].fillna('No Misc')
-                elif column == 'Alley':
-                    X_train[column] = X_train[column].fillna('No Alley')
-                    X_test[column] = X_test[column].fillna('No Alley')
-                elif column == 'Fence':
-                    X_train[column] = X_train[column].fillna('No Fence')
-                    X_test[column] = X_test[column].fillna('No Fence')
-                elif column == 'FireplaceQu':
+                if column == 'FireplaceQu':
                     X_train[column] = X_train[column].fillna('No Fireplace')
                     X_test[column] = X_test[column].fillna('No Fireplace')
                 elif column == 'GarageYrBlt': 
@@ -56,12 +44,9 @@ for column in X_train.columns:
                 elif column in ('GarageCond', 'GarageType', 'GarageFinish', 'GarageQual'):
                     X_train[column] = X_train[column].fillna('No Garage')
                     X_test[column] = X_test[column].fillna('No Garage')
-                elif column in ('BsmtFinType2', 'BsmtExposure', 'BsmtQual', 'BsmtCond', 'BsmtFinType1'):
+                elif column in ('BsmtExposure', 'BsmtQual', 'BsmtCond', 'BsmtFinType1'):
                     X_train[column] = X_train[column].fillna('No Basement')
                     X_test[column] = X_test[column].fillna('No Basement')
-                elif column == 'LotFrontage':
-                    X_train[column] = X_train[column].fillna(X_train[column].mean())
-                    X_test[column] = X_test[column].fillna(X_train[column].mean())
                     
 
 """1-й шаг pipelies"""
