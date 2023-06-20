@@ -133,6 +133,16 @@ for col in X_train.columns:
     if col not in X_test.columns:
         X_test[col] = [0] * 1459
 
+mean = X_train.mean(axis=0)
+std = X_train.std(axis=0)
+X_train -= mean
+X_train /= std
+mean = X_test.mean(axis=0)
+std = X_test.std(axis=0)
+X_test -= mean
+X_test /= std
+
+
 model = keras.models.Sequential()
 model.add(keras.layers.Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
 model.add(keras.layers.Dense(32, activation='relu'))
