@@ -3,6 +3,7 @@ import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
+import matplotlib.pyplot as plt
 keras = tf.keras
 
 
@@ -144,6 +145,15 @@ history = model.fit(X_train,
                     epochs=300,
                     validation_split=0.1,
                     verbose=2)
+
+'''plt.plot(history.history['mae'],
+         label='Средняя абсолютная ошибка на обучающем наборе')
+plt.plot(history.history['val_mae'],
+         label='Средняя абсолютная ошибка на проверочном наборе')
+plt.xlabel('Эпоха обучения')
+plt.ylabel('Средняя абсолютная ошибка')
+plt.legend()
+plt.show()'''
 
 predictions = model.predict(X_test)
 ids = pd.DataFrame([i for i in range(1461, 2920)], columns=['Id'])
