@@ -135,10 +135,17 @@ for col in X_train.columns:
 
 mean = X_train.mean(axis=0)
 std = X_train.std(axis=0)
+for i in X_train.columns:
+    if std[i] == 0:
+        std[i] = 1
 X_train -= mean
 X_train /= std
+
 mean = X_test.mean(axis=0)
 std = X_test.std(axis=0)
+for i in X_test.columns:
+    if std[i] == 0:
+        std[i] = 1
 X_test -= mean
 X_test /= std
 
@@ -152,18 +159,18 @@ model.compile(optimizer='nadam', loss='mse', metrics=['mae'])
 
 history = model.fit(X_train,
                     y_train,
-                    epochs=300,
+                    epochs=600,
                     validation_split=0.1,
                     verbose=2)
 
-'''plt.plot(history.history['mae'],
+plt.plot(history.history['mae'],
          label='Средняя абсолютная ошибка на обучающем наборе')
 plt.plot(history.history['val_mae'],
          label='Средняя абсолютная ошибка на проверочном наборе')
 plt.xlabel('Эпоха обучения')
 plt.ylabel('Средняя абсолютная ошибка')
 plt.legend()
-plt.show()'''
+plt.show()
 
 predictions = model.predict(X_test)
 ids = pd.DataFrame([i for i in range(1461, 2920)], columns=['Id'])
