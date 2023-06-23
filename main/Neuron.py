@@ -10,7 +10,7 @@ keras = tf.keras
 """Здесь используется модель XGBRegressor. Предобработка данных: удалил 4 признака, где слишком много пропущенных
  данных(>80%), NaN заменятеся на наиболее частое значение в столбце, а категориальные значения обрабатываются 
  с помощью onehot.
-Ошибка: 12,7%
+Ошибка: 17%
 Замечания: ручной подбор параметров модели ухудшает точность. Поэтому дэфолтные значения вроде как самые оптимальные
 """
 
@@ -116,38 +116,20 @@ X_test[num_cols] = numerical_transformer.fit_transform(X_test[num_cols])
 
 categorical_transformer = SimpleImputer(strategy='most_frequent')
 X_train[cat_cols] = categorical_transformer.fit_transform(X_train[cat_cols])
-OH_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
-OH_X_train = pd.DataFrame(OH_encoder.fit_transform(X_train[cat_cols]), index=[i for i in range(1, 1461)])
 
 categorical_transformer = SimpleImputer(strategy='most_frequent')
 X_test[cat_cols] = categorical_transformer.fit_transform(X_test[cat_cols])
+
+X = pd.concat([X_train, X_test], axis=0)
+
 OH_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
-OH_X_test = pd.DataFrame(OH_encoder.fit_transform(X_test[cat_cols]), index=[i for i in range(1461, 2920)])
+OH_X = pd.DataFrame(OH_encoder.fit_transform(X[cat_cols]), index=[i for i in range(1, 2920)])
 
-num_X = X_train.drop(cat_cols, axis=1)
-X_train = pd.concat([num_X, OH_X_train], axis=1)
+num_X = X.drop(cat_cols, axis=1)
+X = pd.concat([num_X, OH_X], axis=1)
 
-num_X = X_test.drop(cat_cols, axis=1)
-X_test = pd.concat([num_X, OH_X_test], axis=1)
-for col in X_train.columns:
-    if col not in X_test.columns:
-        X_test[col] = [0] * 1459
-
-mean = X_train.mean(axis=0)
-std = X_train.std(axis=0)
-for i in X_train.columns:
-    if std[i] == 0:
-        std[i] = 1
-X_train -= mean
-X_train /= std
-
-mean = X_test.mean(axis=0)
-std = X_test.std(axis=0)
-for i in X_test.columns:
-    if std[i] == 0:
-        std[i] = 1
-X_test -= mean
-X_test /= std
+X_train = X[:1460]
+X_test = X[1460:]
 
 
 model = keras.models.Sequential()
@@ -159,7 +141,7 @@ model.compile(optimizer='nadam', loss='mse', metrics=['mae'])
 
 history = model.fit(X_train,
                     y_train,
-                    epochs=600,
+                    epochs=400,
                     validation_split=0.1,
                     verbose=2)
 
